@@ -7,12 +7,14 @@ local idle
 local currentBackground 
 local timeSinceLastMovement = 0 --for idle screen
 
+local serveButton = love.graphics.newImage("AssetsLove/Serve.png")
+
 local guest = { --guest list
     {image = love.graphics.newImage("AssetsLove/Guests/Rabbit.png"), name = "Rabbit"},
     {image = love.graphics.newImage("AssetsLove/Guests/Tiger.png"), name = "Tiger"},
     {image = love.graphics.newImage("AssetsLove/Guests/Dog.png"), name = "Dog"}
+    --{ image = love.graphics.newImage("path/to/customer1.png"), happy = love.graphics.newImage("path/to/happy1.png"), sad = love.graphics.newImage("path/to/sad1.png"), preferredTea = "green" },
 }
-
 local dialogues = {
     "Helllllllooo jwe",
     "woofwooooooofwoooof",
@@ -27,6 +29,11 @@ local dialogueIndex = 0
 local guestAlpha = 0
 local timeSinceLastAppearance = 0
 local guestVisible = false
+local currentGuestIndex = 1
+local currentGuest = guest[currentGuestIndex]
+local selectedTea = nil -- set this based on player input
+local reactionTime = 0 -- Time to display the reaction
+
 
 
 function love.load()
@@ -79,7 +86,7 @@ function love.update(dt)
     end
 
     if guestVisibleVisible and guestAlpha < 1 then
-        guestAlphaAlpha = guestAlpha + dt / 2 -- Adjust the fade-in speed if necessary
+        guestAlphaAlpha = guestAlpha + dt / 2 -- Adjust the fade-in speed 
     end
 
     -- Increment the dialogue index to create a typewriter effect
@@ -113,7 +120,8 @@ function love.draw()
 
     love.graphics.draw(background, 0, 0, 0, 0.7, 0.7)
     love.graphics.draw(currentBackground, 0, 0, 0, 0.7, 0.7) 
- 
+
+    
     if guestVisible then
         -- Draw the creature with the current alpha
         love.graphics.setColor(1, 1, 1, guestAlpha)
@@ -135,9 +143,9 @@ function love.draw()
     local time = os.date("%H:%M:%S") -- Gets the current time in hours, minutes, and seconds
     love.graphics.print(time, 75, love.graphics.getHeight() - 69) 
     love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(serveButton, 350, -100)
 
    
-
     if not nameEntered then
         love.graphics.print("Enter your name: " .. playerName, 20, 20)
     end
