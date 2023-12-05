@@ -1,3 +1,4 @@
+--C:\Program Files\Love\love.exe
 -- Initialize variables
 local playerName = ""
 local customfont
@@ -103,7 +104,7 @@ function love.update(dt)
     end
 
     -- Switch the background after __ seconds of inactivity
-    if timeSinceLastMovement > 100 then
+    if timeSinceLastMovement > 20 then
         currentBackground = idle
     end
 
@@ -123,13 +124,15 @@ function love.draw()
 
     
     if guestVisible then
-        -- Draw the creature with the current alpha
-        love.graphics.setColor(1, 1, 1, guestAlpha)
-        love.graphics.draw(currentGuest.image, 350, 300) -- Adjust position as needed
-        love.graphics.setColor(1, 1, 1, 1)
+    
 
         -- Draw the creature's name
         love.graphics.print(currentGuest.name, 355, 555)
+
+            -- Draw the creature with the current alpha
+            love.graphics.setColor(1, 1, 1, guestAlpha)
+            love.graphics.draw(currentGuest.image, 350, 300, 0, 0.1, 0.1) -- Adjust position as needed
+            love.graphics.setColor(1, 1, 1, 1)
 
         -- Draw the dialogue with a typewriter effect
         love.graphics.print(string.sub(currentDialogue, 1, dialogueIndex), 249, 600) -- Adjust position as needed
