@@ -19,14 +19,16 @@ local serveButtonX = 522
 local serveButtonY = 610  
 ------------Guest list variables----------------------------
 local guest = { 
-{name = "Rabbit", preferredTea = "green", image = love.graphics.newImage("AssetsLove/Guests/Rabbit.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/Dog.png"), x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/Tiger.png"), x = 336, y = 270},
-{name = "Tiger", preferredTea = "fruit", image = love.graphics.newImage("AssetsLove/Guests/Tiger.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/TigerHappy.png"),x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/Tiger.png"), x = 336, y = 270},
+{name = "Rabbit", preferredTea = "green", image = love.graphics.newImage("AssetsLove/Guests/Rabbit.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/TigerHappy.png"), x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/TigerSad.png"), x = 336, y = 270},
+{name = "Tiger", preferredTea = "fruit", image = love.graphics.newImage("AssetsLove/Guests/Tiger.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/RabbitHappy.png"),x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/RabbitSad.png"), x = 336, y = 270},
+{name = "Lucky Cat", preferredTea = "black", image = love.graphics.newImage("AssetsLove/Guests/LuckyCat.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/LuckyCatHappy.png"),x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/LuckyCatSad.png"), x = 336, y = 270},
 }
 -------------Guest Dialogue------------------------------------
 local dialogues = {
     "Good day, I have gone through many perils today, and am looking for something to calm my mind",
-    "Achooo!   Im so sorry I have a cold",
-    "Ive been having a hard time falling asleep lately..."
+    "Achooo!   Im so sorry I think I have a cold",
+    "Do you have anything which helps with anxiety?",
+    "Ive been having a hard time falling asleep lately... Could you recommend something"
 }
 
 --Guest stats------------------
@@ -84,7 +86,18 @@ buttons = {
     {normal = love.graphics.newImage("AssetsLove/Tea/Assam.png"), x = 529, y = 388, scale = 0.5, lit = love.graphics.newImage("AssetsLove/TeaLit/AssamLit.png"),x = 529, y = 388, scale = 0.5, name = "Assam Tea", type = "black"},
 }
 end
+songs = {
+    {source = love.audio.newSource("MusicLove/LunarEclipse.mp3", "stream"), name = "Lunar Eclipse - Purple cat", paused = false},
+    {source = love.audio.newSource("MusicLove/kudasaiTtechnicolor.mp3", "stream"), name = "Kudasai - Technicolor", paused = false},
+    {source = love.audio.newSource("MusicLove/KainbeatsWanderer.mp3", "stream"), name = "Kainbeats - Wanderer", paused = false}
+}
 
+for _, song in ipairs(songs) do
+    song.source:setVolume(0.5)  -- Set to a lower volume
+end
+
+currentSongIndex = 1
+songs[currentSongIndex].source:play()
 function love.textinput(text)
       -- Handle text input only, player name stats
       if not nameEntered then
@@ -104,6 +117,28 @@ function love.keypressed(key)
             playerName = string.sub(playerName, 1, #playerName - 1)
         end
     end
+    if key == 'lshift' then
+        -- Toggle pause/play
+        local currentSong = songs[currentSongIndex]
+        if currentSong.source:isPlaying() then
+            currentSong.source:pause()
+            currentSong.paused = true
+        else
+            currentSong.source:play()
+            currentSong.paused = false
+        end
+    elseif key == 'rshift' then
+        -- Stop the current song and skip to the next song
+        local currentSong = songs[currentSongIndex]
+        currentSong.source:stop()  -- Stop the current song
+        currentSong.paused = false
+
+        currentSongIndex = currentSongIndex + 1
+        if currentSongIndex > #songs then
+            currentSongIndex = 1
+        end
+        songs[currentSongIndex].source:play()
+    end
 end
 
 --idle initilization settings
@@ -120,6 +155,16 @@ function isIdle()
 end
 
 function love.update(dt) --delta time
+    local currentSong = songs[currentSongIndex]
+    if not currentSong.source:isPlaying() and not currentSong.paused then
+        -- Move to the next song
+        currentSongIndex = currentSongIndex + 1
+        if currentSongIndex > #songs then
+            currentSongIndex = 1
+        end
+        songs[currentSongIndex].source:play()
+    end
+
     timeSinceLastAppearance = timeSinceLastAppearance + dt
 
  if fadeOut then --fade in "animation", playing and increasing opacity
@@ -283,6 +328,15 @@ function love.draw()
 
     love.graphics.draw(background, 0, 0, 0, 0.7, 0.7)
     love.graphics.draw(currentBackground, 0, 0, 0, 0.7, 0.7) 
+    if isIdle() then
+        -- Only display the song name in idle mode
+        local songName = songs[currentSongIndex].name
+        love.graphics.setFont(smallFont)
+        love.graphics.setColor(0.6, 0.3, 0.7)  -- Cute purple color
+        love.graphics.print("Now Playing: " .. songName, 20, 50) 
+        love.graphics.print("Press [lshift] to Pause/Play current song", 20, 70)
+        love.graphics.print("Press [rshift] to Skip song", 20, 90)
+        end
 
     if not isIdle() then
         -- Draw buttons and selected tea name if the game is not idle
@@ -302,13 +356,13 @@ function love.draw()
     -- Check if the current background is not one of the idle backgrounds
     if currentBackground ~= morningBackground and currentBackground ~= afternoonBackground and currentBackground ~= nightBackground then
     -- Draw guest and dialogue only if the current background is not an idle background
-end
+    end
 
-if currentGuest and fadeOut then
-    love.graphics.setColor(1, 1, 1, fadeAlpha)
-    love.graphics.draw(currentGuest.image, 183, 392) 
-    love.graphics.setColor(1, 1, 1, 1) -- Reset color to white
-end
+    if currentGuest and fadeOut then
+        love.graphics.setColor(1, 1, 1, fadeAlpha)
+        love.graphics.draw(currentGuest.image, 183, 392) 
+        love.graphics.setColor(1, 1, 1, 1) -- Reset color to white
+    end
 
 local textBoxWidth = 250
 
