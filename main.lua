@@ -19,8 +19,8 @@ local serveButtonX = 522
 local serveButtonY = 610  
 ------------Guest list variables----------------------------
 local guest = { 
-{name = "Rabbit", preferredTea = "green", image = love.graphics.newImage("AssetsLove/Guests/Rabbit.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/TigerHappy.png"), x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/TigerSad.png"), x = 336, y = 270},
-{name = "Tiger", preferredTea = "fruit", image = love.graphics.newImage("AssetsLove/Guests/Tiger.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/RabbitHappy.png"),x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/RabbitSad.png"), x = 336, y = 270},
+{name = "Rabbit", preferredTea = "green", image = love.graphics.newImage("AssetsLove/Guests/Rabbit.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/RabbitHappy.png"), x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/RabbitSad.png"), x = 336, y = 270},
+{name = "Tiger", preferredTea = "fruit", image = love.graphics.newImage("AssetsLove/Guests/Tiger.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/TigerHappy.png"),x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/TigerSad.png"), x = 336, y = 270},
 {name = "Lucky Cat", preferredTea = "black", image = love.graphics.newImage("AssetsLove/Guests/LuckyCat.png"), x = 336, y = 270, scale = 1, happyImage = love.graphics.newImage("AssetsLove/Guests/LuckyCatHappy.png"),x = 336, y = 270, sadImage = love.graphics.newImage("AssetsLove/Guests/LuckyCatSad.png"), x = 336, y = 270},
 }
 -------------Guest Dialogue------------------------------------
