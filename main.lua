@@ -167,12 +167,12 @@ function love.update(dt) --delta time
 
     timeSinceLastAppearance = timeSinceLastAppearance + dt
 
- if fadeOut then --fade in "animation", playing and increasing opacity
+    if fadeOut then
         fadeAlpha = fadeAlpha - fadeSpeed * dt
         if fadeAlpha <= 0 then
             fadeAlpha = 0
             fadeOut = false
-            -- Reset currentGuest and selectedTea
+            guestVisible = false  -- Hide the guest after fade out
             currentGuest = nil
             selectedTea = nil
         end
