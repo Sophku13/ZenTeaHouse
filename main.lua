@@ -9,6 +9,13 @@ local background
 local idle
 local currentBackground 
 local timeSinceLastMovement = 0 --for idle screen
+local correctTeasServed = 0 -- counter for the amount of tea you served correct
+local teaServed = false -- Flag to check if tea has been served to the current guest
+
+
+local fadeOut = false
+local fadeAlpha = 1  -- Initial alpha value (1 is fully opaque, 0 is fully transparent)
+local fadeSpeed = 0.5  -- How fast the fade occurs (higher is faster)
 
 local messageTimer = 0
 local messageDisplayTime = 3  -- Time in seconds to display the message
@@ -58,10 +65,10 @@ function love.load()
     customfont = love.graphics.newFont("FontsLove/Starla.ttf",24) 
     smallFont = love.graphics.newFont("FontsLove/Starla.ttf", 18)
     background = love.graphics.newImage("AssetsLove/Background.png")
-    currentBackground = background
      --love.window.setMode(2000,1200, {fullscreen = false})
 
 --idle backgrounds
+    currentBackground = background
       morningBackground = love.graphics.newImage("AssetsLove/Idle/Morning.png")
       afternoonBackground = love.graphics.newImage("AssetsLove/Idle/Afternoon.png")
       nightBackground = love.graphics.newImage("AssetsLove/Idle/Night.png")
@@ -98,6 +105,7 @@ end
 
 currentSongIndex = 1
 songs[currentSongIndex].source:play()
+
 function love.textinput(text)
       -- Handle text input only, player name stats
       if not nameEntered then
@@ -168,13 +176,12 @@ function love.update(dt) --delta time
     timeSinceLastAppearance = timeSinceLastAppearance + dt
 
     if fadeOut then
-        fadeAlpha = fadeAlpha - fadeSpeed * dt
+        fadeAlpha = fadeAlpha - dt  -- Decrease fade alpha over time
         if fadeAlpha <= 0 then
             fadeAlpha = 0
             fadeOut = false
             guestVisible = false  -- Hide the guest after fade out
             currentGuest = nil
-            selectedTea = nil
         end
     end
     -- Randomly decide to show a guest
@@ -183,6 +190,7 @@ function love.update(dt) --delta time
         guestAlpha = 0
         dialogueIndex = 0
         timeSinceLastAppearance = 0
+        teaServed = false --reset flag
 
         -- Randomly select a guest and their dialogue
         currentGuest = guest[love.math.random(#guest)]
@@ -269,6 +277,11 @@ function serveTea()
         return
     end
     checkCustomerReaction()
+    if teaServed then
+        return 
+    end
+        teaServed = true
+    
 end
   
 function love.mousepressed(x, y, button, istouch, presses)
@@ -293,8 +306,9 @@ function love.mousepressed(x, y, button, istouch, presses)
     end
 end 
 
+
 function checkCustomerReaction()
-    if currentGuest == nil then
+    if currentGuest == nil or teaServed then
         return  -- If there's no current guest
     end
 
@@ -303,18 +317,16 @@ function checkCustomerReaction()
     if correctTeaServed then
         currentGuest.image = currentGuest.happyImage
         currentDialogue = "Wow this tea is amazing, thank you so much!"
+        correctTeasServed = correctTeasServed + 1 -- Increment the counter
     else
         currentGuest.image = currentGuest.sadImage
         currentDialogue = "Euhh this was not what I had in mind.. thank you though"
     end
 
     dialogueIndex = #currentDialogue  -- Set dialogue index to the length of the new dialogue
-    startFadeOut()
+    fadeOut = true
+    fadeAlpha = 5  
 end
-
-local fadeOut = false
-local fadeAlpha = 1  -- Initial alpha value (1 is fully opaque, 0 is fully transparent)
-local fadeSpeed = 0.5  -- How fast the fade occurs (higher is faster)
 
 function startFadeOut()
     fadeOut = true
@@ -328,14 +340,14 @@ function love.draw()
 
     love.graphics.draw(background, 0, 0, 0, 0.7, 0.7)
     love.graphics.draw(currentBackground, 0, 0, 0, 0.7, 0.7) 
+    love.graphics.print("Correct teas served: " .. correctTeasServed, 450, 20) 
     if isIdle() then
         -- Only display the song name in idle mode
         local songName = songs[currentSongIndex].name
         love.graphics.setFont(smallFont)
-        love.graphics.setColor(0.675, 0.302, 0.749) 
         love.graphics.print("Now Playing: " .. songName, 20, 50) 
-        love.graphics.print("Press [[lshift]] to Pause/Play current song", 20, 70)
-        love.graphics.print("Press [[rshift]] to Skip song", 20, 90)
+        love.graphics.print("Press [lshift] to Pause/Play current song", 20, 70)
+        love.graphics.print("Press [rshift] to Skip song", 20, 90)
         end
 
     if not isIdle() then
