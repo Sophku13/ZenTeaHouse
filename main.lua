@@ -75,7 +75,7 @@ buttons = {
     {normal = love.graphics.newImage("AssetsLove/Tea/Jasmine.png"), x = 194, y = 205, scale = 0.5, lit = love.graphics.newImage("AssetsLove/TeaLit/JasmineLit.png"), x = 194, y = 205, scale = 0.5, name = "Jasmine Tea", type = "green"},
     --Fruit tea
     {normal = love.graphics.newImage("AssetsLove/Tea/Lemon.png"), x = 234 , y = 163, scale = 0.5, lit = love.graphics.newImage("AssetsLove/TeaLit/LemonLit.png"), x = 234 , y = 163, scale = 0.5, name = "Lemon Tea", type = "fruit"},
-    {normal = love.graphics.newImage("AssetsLove/Tea/Mint.png"), x = 292 , y = 231, scale = 0.5, lit = love.graphics.newImage("AssetsLove/TeaLit/MintLit.png"), x = 292 , y = 231, scale = 0.5, name = "Mint Tea", type = "fruit"},
+    {normal = love.graphics.newImage("AssetsLove/Tea/Mint.png"), x = 240 , y = 116, scale = 0.5, lit = love.graphics.newImage("AssetsLove/TeaLit/MintLit.png"), x = 292 , y = 116, scale = 0.5, name = "Mint Tea", type = "fruit"},
     {normal = love.graphics.newImage("AssetsLove/Tea/Ginger.png"), x = 355, y = 116, scale = 0.5, lit = love.graphics.newImage("AssetsLove/TeaLit/GingerLit.png"),x = 355, y = 116, scale = 0.5, name = "Ginger Tea", type = "fruit"},
     {normal = love.graphics.newImage("AssetsLove/Tea/Hibiscus.png"), x = 410, y = 141, scale = 0.5, lit = love.graphics.newImage("AssetsLove/TeaLit/HibiscusLit.png"), x = 410, y = 141, scale = 0.5, name = "Hibiscus Tea", type = "fruit"},
     --Black tea
@@ -332,10 +332,10 @@ function love.draw()
         -- Only display the song name in idle mode
         local songName = songs[currentSongIndex].name
         love.graphics.setFont(smallFont)
-        love.graphics.setColor(0.6, 0.3, 0.7)  -- Cute purple color
+        love.graphics.setColor(0.675, 0.302, 0.749) 
         love.graphics.print("Now Playing: " .. songName, 20, 50) 
-        love.graphics.print("Press [lshift] to Pause/Play current song", 20, 70)
-        love.graphics.print("Press [rshift] to Skip song", 20, 90)
+        love.graphics.print("Press [[lshift]] to Pause/Play current song", 20, 70)
+        love.graphics.print("Press [[rshift]] to Skip song", 20, 90)
         end
 
     if not isIdle() then
@@ -360,7 +360,6 @@ function love.draw()
 
     if currentGuest and fadeOut then
         love.graphics.setColor(1, 1, 1, fadeAlpha)
-        love.graphics.draw(currentGuest.image, 183, 392) 
         love.graphics.setColor(1, 1, 1, 1) -- Reset color to white
     end
 
@@ -379,7 +378,7 @@ end
 
             -- Draw the guest with the current alpha
             love.graphics.setColor(1, 1, 1, guestAlpha) 
-            love.graphics.draw(currentGuest.image, 350, 300, 0, 0.1) 
+            love.graphics.draw(currentGuest.image, 250, 220, 0, 0.5,0.5)  
             love.graphics.setColor(1, 1, 1, 1)
 
             -- Draw the dialogue with a typewriter effect
